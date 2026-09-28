@@ -14,7 +14,7 @@ import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View }
 
 import { VociRow } from '@/components/voci-row';
 import { Colors } from '@/constants/theme';
-import { useVoci } from '@/context/voci-context';
+import {useVoci, Voci} from '@/context/voci-context';
 
 export default function VocabularyListScreen() {
   // useVoci() liefert die gemeinsame Vokabelliste und die CRUD-Funktionen.
@@ -29,6 +29,15 @@ export default function VocabularyListScreen() {
       { text: 'Löschen', style: 'destructive', onPress: () => removeVoci(index) },
     ]);
   };
+
+  function updateImage(index: number, voci: Voci, uri: string) {
+      const updated: Voci = {
+          term: voci.term,
+          translation: voci.translation,
+          imageUri: uri,
+      }
+      updateVoci(index, updated);
+  }
 
   function List() {
     return vociList.length === 0 ? (
@@ -48,9 +57,7 @@ export default function VocabularyListScreen() {
                 <VociRow
                     voci={item}
                     onPress={() => router.push({ pathname: '/add', params: { index: String(index) } })}
-                    onImageUpdate={(uri: string) => updateVoci(index, {
-                        term: item.term, translation: item.translation, imageUri: uri
-                    })}
+                    onImageUpdate={(uri: string) => updateImage(index, item, uri)}
                     onDelete={() => confirmDelete(index)}
                 />
             )}
