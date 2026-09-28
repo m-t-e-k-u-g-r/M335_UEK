@@ -39,6 +39,20 @@
           }
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your images to let you set them to your vocab",
+          "colors": {
+            "cropToolbarColor": "#000000"
+          },
+          "dark": {
+            "colors": {
+              "crapToolbarColor": "#000000"
+            }
+          }
+        }
+      ],
       "expo-font",
       "expo-image",
       "expo-status-bar",

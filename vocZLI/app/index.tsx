@@ -18,7 +18,7 @@ import { useVoci } from '@/context/voci-context';
 
 export default function VocabularyListScreen() {
   // useVoci() liefert die gemeinsame Vokabelliste und die CRUD-Funktionen.
-  const { isLoading, vociList, removeVoci } = useVoci();
+  const { isLoading, vociList, updateVoci, removeVoci } = useVoci();
   // useRouter() ermöglicht die Navigation zu anderen Screens.
   const router = useRouter();
 
@@ -48,6 +48,9 @@ export default function VocabularyListScreen() {
                 <VociRow
                     voci={item}
                     onPress={() => router.push({ pathname: '/add', params: { index: String(index) } })}
+                    onImageUpdate={(uri: string) => updateVoci(index, {
+                        term: item.term, translation: item.translation, imageUri: uri
+                    })}
                     onDelete={() => confirmDelete(index)}
                 />
             )}

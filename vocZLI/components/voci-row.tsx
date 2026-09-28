@@ -11,17 +11,24 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Colors } from '@/constants/theme';
 import type { Voci } from '@/context/voci-context';
+import ImagePickerButton from "@/components/ImagePickerButton";
 
 // Diese Props erwartet die Komponente von aussen.
 interface VociRowProps {
   voci: Voci; // die anzuzeigende Vokabel
+  onImageUpdate: (uri: string) => void; // beim Antippen des Platzhalters
   onPress: () => void; // beim Antippen der Zeile (Bearbeiten)
   onDelete: () => void; // beim Antippen des Papierkorbs (Löschen)
 }
 
-export function VociRow({ voci, onPress, onDelete }: VociRowProps) {
+export function VociRow({ voci, onImageUpdate, onPress, onDelete }: VociRowProps) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
+      <ImagePickerButton
+          imageUri={voci.imageUri}
+          onImageSelected={onImageUpdate}
+      />
+
       <View style={styles.texts}>
         <Text style={styles.term}>{voci.term}</Text>
         <Text style={styles.translation}>{voci.translation}</Text>
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
   },
-  texts: { flex: 1 },
+  texts: { marginLeft: 20, flex: 1 },
   term: { fontSize: 17, fontWeight: '600', color: Colors.text },
   translation: { fontSize: 15, color: Colors.muted, marginTop: 2 },
 });
