@@ -10,7 +10,8 @@
  *   2) VociProvider stellt Daten + Funktionen bereit (hat einen eigenen useState)
  *   3) useVoci() liest den Context bequem aus (Custom Hook)
  */
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import {createContext, useContext, useState, type ReactNode, useEffect} from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Eine einzelne Vokabel. (imageUri ist optional und wird erst später genutzt.)
 export interface Voci {
@@ -21,6 +22,7 @@ export interface Voci {
 
 // Was der Context bereitstellt: die Daten UND die CRUD-Funktionen.
 interface VociContextType {
+  isLoading: boolean; // Loading State
   vociList: Voci[]; // Read   – die ganze Liste
   addVoci: (newVoci: Voci) => void; // Create
   updateVoci: (index: number, updated: Voci) => void; // Update
@@ -39,6 +41,8 @@ export function VociProvider({ children }: { children: ReactNode }) {
     { term: 'house', translation: 'Haus' },
     { term: 'dog', translation: 'Hund' },
   ]);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Create: neue Vokabel ans Ende der Liste anhängen.
   const addVoci = (newVoci: Voci) => {
@@ -55,8 +59,48 @@ export function VociProvider({ children }: { children: ReactNode }) {
     setVociList((prev) => prev.filter((_, i) => i !== index));
   };
 
+  async function saveVocis(json: string) {
+    try {
+      await AsyncStorage.setItem('vocis', json);
+    } catch (e) {
+      console.error(`Fehler beim Speichern: ${e}`);
+    }
+  }
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    const json = JSON.stringify(vociList);
+    saveVocis(json)
+        .then(() => console.log('Vokabeln gespeichert'));
+  }, [isLoaded, vociList])
+
+  async function loadVocis() {
+    try {
+      const json = await AsyncStorage.getItem('vocis');
+      if (!json) return;
+
+      const vocis: Voci[] = JSON.parse(json);
+      return vocis;
+    } catch (e) {
+      console.error(`Fehler beim Laden: ${e}`)
+    }
+  }
+
+  useEffect(() => {
+    loadVocis()
+        .then(vocis => {
+          if (vocis) {
+            setVociList(vocis);
+            setIsLoaded(true);
+          } else {
+            console.error("Keine Vokabeln gefunden");
+          }
+        })
+        .finally(() => setIsLoading(false));
+  }, [])
+
   return (
-    <VociContext.Provider value={{ vociList, addVoci, updateVoci, removeVoci }}>
+    <VociContext.Provider value={{ isLoading, vociList, addVoci, updateVoci, removeVoci }}>
       {children}
     </VociContext.Provider>
   );

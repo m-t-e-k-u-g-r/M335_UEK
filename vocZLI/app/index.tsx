@@ -10,7 +10,7 @@
  */
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { VociRow } from '@/components/voci-row';
 import { Colors } from '@/constants/theme';
@@ -18,7 +18,7 @@ import { useVoci } from '@/context/voci-context';
 
 export default function VocabularyListScreen() {
   // useVoci() liefert die gemeinsame Vokabelliste und die CRUD-Funktionen.
-  const { vociList, removeVoci } = useVoci();
+  const { isLoading, vociList, removeVoci } = useVoci();
   // useRouter() ermöglicht die Navigation zu anderen Screens.
   const router = useRouter();
 
@@ -29,6 +29,31 @@ export default function VocabularyListScreen() {
       { text: 'Löschen', style: 'destructive', onPress: () => removeVoci(index) },
     ]);
   };
+
+  function List() {
+    return vociList.length === 0 ? (
+        // Leerer Zustand: es gibt noch keine Vokabeln.
+        <View style={styles.empty}>
+          <Ionicons name="book-outline" size={48} color={Colors.muted} />
+          <Text style={styles.emptyText}>Noch keine Vokabeln.</Text>
+          <Text style={styles.emptyHint}>Tippe oben rechts auf +, um eine hinzuzufügen.</Text>
+        </View>
+    ) : (
+        // FlatList rendert für jede Vokabel eine VociRow.
+        <FlatList
+            data={vociList}
+            keyExtractor={(_, index) => String(index)}
+            contentContainerStyle={styles.list}
+            renderItem={({ item, index }) => (
+                <VociRow
+                    voci={item}
+                    onPress={() => router.push({ pathname: '/add', params: { index: String(index) } })}
+                    onDelete={() => confirmDelete(index)}
+                />
+            )}
+        />
+    )
+  }
 
   return (
     <View style={styles.screen}>
@@ -43,27 +68,10 @@ export default function VocabularyListScreen() {
         }}
       />
 
-      {vociList.length === 0 ? (
-        // Leerer Zustand: es gibt noch keine Vokabeln.
-        <View style={styles.empty}>
-          <Ionicons name="book-outline" size={48} color={Colors.muted} />
-          <Text style={styles.emptyText}>Noch keine Vokabeln.</Text>
-          <Text style={styles.emptyHint}>Tippe oben rechts auf +, um eine hinzuzufügen.</Text>
-        </View>
+      {isLoading ? (
+          <ActivityIndicator size="large" />
       ) : (
-        // FlatList rendert für jede Vokabel eine VociRow.
-        <FlatList
-          data={vociList}
-          keyExtractor={(_, index) => String(index)}
-          contentContainerStyle={styles.list}
-          renderItem={({ item, index }) => (
-            <VociRow
-              voci={item}
-              onPress={() => router.push({ pathname: '/add', params: { index: String(index) } })}
-              onDelete={() => confirmDelete(index)}
-            />
-          )}
-        />
+          List()
       )}
 
       {/* Floating Action Button (FAB): startet die Lern-Session. */}
