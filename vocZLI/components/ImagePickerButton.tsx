@@ -17,6 +17,15 @@ export default function ImagePickerButton({ imageUri, onImageSelected }: ImagePi
         ]);
     }
 
+    async function copyImageToAppDirectory(uri: string) {
+        const file = new File(uri);
+        const fileName = `${Date.now()}${file.extension}`;
+        const copy = new File(Paths.document, fileName);
+        await file.copy(copy);
+
+        return copy.uri;
+    }
+
     async function makePhoto() {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
@@ -29,17 +38,9 @@ export default function ImagePickerButton({ imageUri, onImageSelected }: ImagePi
         });
 
         if (!result.canceled) {
-            onImageSelected(result.assets[0].uri);
+            const uri = await copyImageToAppDirectory(result.assets[0].uri);
+            onImageSelected(uri);
         }
-    }
-
-    async function copyImageToAppDirectory(uri: string) {
-        const file = new File(uri);
-        const fileName = `${Date.now()}${file.extension}`;
-        const copy = new File(Paths.document, fileName);
-        await file.copy(copy);
-
-        return copy.uri;
     }
 
     async function openGallery() {

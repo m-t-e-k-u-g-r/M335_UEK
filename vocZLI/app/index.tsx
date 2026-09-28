@@ -15,6 +15,7 @@ import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, View }
 import { VociRow } from '@/components/voci-row';
 import { Colors } from '@/constants/theme';
 import {useVoci, Voci} from '@/context/voci-context';
+import { File } from 'expo-file-system';
 
 export default function VocabularyListScreen() {
   // useVoci() liefert die gemeinsame Vokabelliste und die CRUD-Funktionen.
@@ -26,9 +27,24 @@ export default function VocabularyListScreen() {
   const confirmDelete = (index: number) => {
     Alert.alert('Vokabel löschen?', `"${vociList[index].term}" wirklich löschen?`, [
       { text: 'Abbrechen', style: 'cancel' },
-      { text: 'Löschen', style: 'destructive', onPress: () => removeVoci(index) },
+      { text: 'Löschen', style: 'destructive', onPress: () => deleteVoci(index) },
     ]);
   };
+
+  function deleteVoci(index: number) {
+      const deletedVoci = vociList.at(index);
+      if (!deletedVoci) return;
+      if (deletedVoci.imageUri) {
+          try {
+              const imgToDelete = new File(deletedVoci.imageUri);
+              imgToDelete.delete();
+          } catch (e) {
+              console.error(`Konnte das Bild von ${deletedVoci.term} nicht entfernen: ${e}`);
+          }
+      }
+
+      removeVoci(index);
+  }
 
   function updateImage(index: number, voci: Voci, uri: string) {
       const updated: Voci = {
