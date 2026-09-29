@@ -14,7 +14,8 @@ export default function SensorDebug() {
 
     useEffect(() => {
         const subscription = subscribe();
-        return () => subscription.remove();
+        setSubscription(subscription);
+        return () => subscription?.remove();
     }, []);
 
     const chartData = measurement.map(({ xDelta, yDelta, zDelta, time }) => ({
@@ -29,7 +30,10 @@ export default function SensorDebug() {
             <Text style={[styles.title]}>Accelerometer</Text>
             <Pressable
                 style={[styles.btn]}
-                onPress={subscription !== null ? unsubscribe : subscribe}
+                onPress={subscription !== null ? unsubscribe : () => {
+                    const subscription = subscribe();
+                    setSubscription(subscription);
+                }}
             >
                 <Text style={[styles.btnText]}>{ subscription == null ? 'Resume' : 'Pause' }</Text>
             </Pressable>
