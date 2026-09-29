@@ -1,54 +1,50 @@
 import {Pressable, StyleSheet, Text, View} from "react-native";
+import {useAccelerometer} from "@/context/accelerometer_context";
 import {useEffect, useState} from "react";
-import { Accelerometer } from 'expo-sensors';
-import { BarChart } from "react-native-chart-kit/v2";
+import {LineChart} from "react-native-chart-kit/v2";
 
 export default function SensorDebug() {
-    const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
+    const { measurement, subscribe } = useAccelerometer();
     const [subscription, setSubscription] = useState<any>(null);
 
-    const _subscribe = () => {
-        setSubscription(Accelerometer.addListener(setData));
-    };
-
-    const _unsubscribe = () => {
+    const unsubscribe = () => {
         subscription && subscription.remove();
         setSubscription(null);
     };
 
     useEffect(() => {
-        Accelerometer.setUpdateInterval(100);
-        _subscribe();
-        return () => _unsubscribe();
+        const subscription = subscribe();
+        return () => subscription.remove();
     }, []);
 
-    const data = () => {
-        return [
-            { label: 'X', value: x },
-            { label: 'Y', value: y },
-            { label: 'Z', value: z },
-        ]
-    };
+    const chartData = measurement.map(({ xDelta, yDelta, zDelta, time }) => ({
+        xDelta,
+        yDelta,
+        zDelta,
+        time,
+    }));
 
     return (
         <View style={[styles.container]}>
             <Text style={[styles.title]}>Accelerometer</Text>
             <Pressable
                 style={[styles.btn]}
-                onPress={subscription ? _unsubscribe : _subscribe}
+                onPress={subscription !== null ? unsubscribe : subscribe}
             >
-                <Text style={[styles.btnText]}>{ subscription ? 'Pause' : 'Resume' }</Text>
+                <Text style={[styles.btnText]}>{ subscription == null ? 'Resume' : 'Pause' }</Text>
             </Pressable>
             <View>
                 <Text style={[styles.chartTitle]}>Live Values</Text>
-                <BarChart
-                    data={data()}
-                    xKey="label"
-                    yKey="value"
+                <LineChart
+                    data={chartData}
+                    xKey="time"
+                    series={[
+                        { yKey: "xDelta" },
+                        { yKey: "yDelta" },
+                        { yKey: "zDelta" },
+                    ]}
                     width={350}
                     height={200}
-                    yDomain={{ min: -1.5, max: 1.5 }}
-                    orientation="horizontal"
                 />
             </View>
         </View>
