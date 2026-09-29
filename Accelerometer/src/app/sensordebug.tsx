@@ -39,10 +39,12 @@ export default function SensorDebug() {
                     data={chartData}
                     xKey="time"
                     series={[
-                        { yKey: "xDelta" },
-                        { yKey: "yDelta" },
-                        { yKey: "zDelta" },
+                        { yKey: "xDelta", label: 'X', strokeWidth: 0.5 },
+                        { yKey: "yDelta", label: 'Y', strokeWidth: 0.5 },
+                        { yKey: "zDelta", label: 'Z', strokeWidth: 0.5 },
                     ]}
+                    showDots={false}
+                    formatXLabel={() => ""}
                     width={350}
                     height={200}
                 />
