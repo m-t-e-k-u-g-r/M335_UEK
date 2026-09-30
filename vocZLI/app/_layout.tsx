@@ -11,24 +11,26 @@ import 'react-native-reanimated';
 
 import { Colors } from '@/constants/theme';
 import { VociProvider } from '@/context/voci-context';
+import {NotificationProvider} from "@/context/notification-context";
 
 export default function RootLayout() {
   return (
-    // Der Provider umschliesst den ganzen Stack -> jeder Screen kann useVoci() nutzen.
-    <VociProvider>
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: Colors.primary },
-          headerTintColor: Colors.white,
-          headerTitleStyle: { fontWeight: 'bold' },
-          contentStyle: { backgroundColor: Colors.background },
-        }}>
-        {/* Jeder <Stack.Screen> registriert einen Screen + dessen Titel. */}
-        <Stack.Screen name="index" options={{ title: 'Meine Vokabeln' }} />
-        <Stack.Screen name="learn" options={{ title: 'Vokabeln lernen' }} />
-        <Stack.Screen name="add" options={{ title: 'Vokabel hinzufügen' }} />
-      </Stack>
-      <StatusBar style="light" />
-    </VociProvider>
+    <NotificationProvider>
+        <VociProvider>
+            <Stack
+                screenOptions={{
+                    headerStyle: { backgroundColor: Colors.primary },
+                    headerTintColor: Colors.white,
+                    headerTitleStyle: { fontWeight: 'bold' },
+                    contentStyle: { backgroundColor: Colors.background },
+                }}>
+                {/* Jeder <Stack.Screen> registriert einen Screen + dessen Titel. */}
+                <Stack.Screen name="index" options={{ title: 'Meine Vokabeln' }} />
+                <Stack.Screen name="learn" options={{ title: 'Vokabeln lernen' }} />
+                <Stack.Screen name="add" options={{ title: 'Vokabel hinzufügen' }} />
+            </Stack>
+            <StatusBar style="light" />
+        </VociProvider>
+    </NotificationProvider>
   );
 }
