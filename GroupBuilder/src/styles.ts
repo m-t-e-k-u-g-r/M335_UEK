@@ -6,6 +6,17 @@ export const styles = StyleSheet.create({
         backgroundColor: "#f8fafc",
         padding: 16,
     },
+    inputCard: {
+        backgroundColor: "#ffffff",
+        borderRadius: 12,
+        padding: 12,
+        marginBottom: 16,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+    },
     inputGroup: {
         flexDirection: "row",
         alignItems: "center",
@@ -29,7 +40,6 @@ export const styles = StyleSheet.create({
     },
     numInput: {
         width: 60,
-        height: 50,
         textAlign: "center",
         flex: 0,
     },

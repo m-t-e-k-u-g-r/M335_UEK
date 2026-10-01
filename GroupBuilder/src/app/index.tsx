@@ -1,4 +1,4 @@
-import {Alert, FlatList, Text, View} from "react-native";
+import {Alert, FlatList, View} from "react-native";
 import {useState} from "react";
 import {styles} from "@/styles";
 import ParticipantInput from "@/components/participantInput";
@@ -6,10 +6,13 @@ import CountInput from "@/components/countInput";
 import {mix} from "@/utils";
 import ButtonContainer from "@/components/buttonContainer";
 import Group from "@/components/group";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
+import ListHeader from "@/components/listHeader";
 
 export type ConfigType = 'Groups' | 'Members';
 
 export default function Index() {
+    const insets = useSafeAreaInsets();
     const [input, setInput] = useState<string>("");
     const [participants, setParticipants] = useState<string[]>([]);
     const [groups, setGroups] = useState<string[][]>([]);
@@ -35,8 +38,10 @@ export default function Index() {
     }
 
     return (
-        <View style={styles.container}>
-            <View>
+        <View style={[styles.container, {
+            paddingBottom: insets.bottom
+        }]}>
+            <View style={styles.inputCard}>
                 <ParticipantInput
                     input={input} setInput={setInput}
                     participants={participants} setParticipants={setParticipants}
@@ -50,22 +55,15 @@ export default function Index() {
                 <ButtonContainer assign={assign}/>
             </View>
 
-            <Text style={styles.sectionTitle}>Participants ({participants.length})</Text>
-            <Group participants={participants}/>
-
-            {groups.length > 0 && (
-                <>
-                    <Text style={styles.sectionTitle}>Groups ({groups.length})</Text>
-                    <FlatList
-                        style={styles.groupsList}
-                        data={groups}
-                        keyExtractor={(_, index) => `group-${index}`}
-                        renderItem={({ item, index }) =>
-                            <Group title={`Group ${index + 1}`} participants={item} />
-                        }
-                    />
-                </>
-            )}
+            <FlatList
+                style={[styles.groupsList]}
+                data={groups}
+                keyExtractor={(_, index) => `group-${index}`}
+                ListHeaderComponent={ <ListHeader groups={groups.length} participants={participants} /> }
+                renderItem={({ item, index }) =>
+                    <Group title={`Group ${index + 1}`} participants={item} />
+                }
+            />
         </View>
     );
 }
