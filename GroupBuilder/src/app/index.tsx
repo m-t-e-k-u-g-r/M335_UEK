@@ -37,6 +37,10 @@ export default function Index() {
         setGroups(groups);
     }
 
+    function addParticipants(names: string[]) {
+        setParticipants([...participants, ...names]);
+    }
+
     return (
         <View style={[styles.container, {
             paddingBottom: insets.bottom
@@ -52,7 +56,10 @@ export default function Index() {
                     type={type} setType={setType}
                 />
 
-                <ButtonContainer assign={assign}/>
+                <ButtonContainer
+                    addParticipants={addParticipants}
+                    assign={assign}
+                />
             </View>
 
             <FlatList
