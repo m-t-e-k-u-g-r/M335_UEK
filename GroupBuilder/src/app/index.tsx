@@ -1,4 +1,4 @@
-import {Alert, View} from "react-native";
+import {Alert, FlatList, Text, View} from "react-native";
 import {useState} from "react";
 import {styles} from "@/styles";
 import ParticipantInput from "@/components/participantInput";
@@ -50,7 +50,22 @@ export default function Index() {
                 <ButtonContainer assign={assign}/>
             </View>
 
+            <Text style={styles.sectionTitle}>Participants ({participants.length})</Text>
             <Group participants={participants}/>
+
+            {groups.length > 0 && (
+                <>
+                    <Text style={styles.sectionTitle}>Groups ({groups.length})</Text>
+                    <FlatList
+                        style={styles.groupsList}
+                        data={groups}
+                        keyExtractor={(_, index) => `group-${index}`}
+                        renderItem={({ item, index }) =>
+                            <Group title={`Group ${index + 1}`} participants={item} />
+                        }
+                    />
+                </>
+            )}
         </View>
     );
 }

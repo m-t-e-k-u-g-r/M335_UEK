@@ -85,6 +85,13 @@ export const styles = StyleSheet.create({
     assignButton: {
         backgroundColor: "#059669",
     },
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: "700",
+        color: "#1e293b",
+        marginTop: 8,
+        marginBottom: 8,
+    },
     card: {
         backgroundColor: "#ffffff",
         borderRadius: 12,
@@ -103,6 +110,9 @@ export const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#334155",
         marginBottom: 8,
+    },
+    groupsList: {
+        flex: 1,
     },
     participantChipList: {
         flexDirection: "row",
