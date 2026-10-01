@@ -5,6 +5,7 @@ import ParticipantInput from "@/components/participantInput";
 import CountInput from "@/components/countInput";
 import {mix} from "@/utils";
 import ButtonContainer from "@/components/buttonContainer";
+import Group from "@/components/group";
 
 export type ConfigType = 'Groups' | 'Members';
 
@@ -35,17 +36,21 @@ export default function Index() {
 
     return (
         <View style={styles.container}>
-            <ParticipantInput
-                input={input} setInput={setInput}
-                participants={participants} setParticipants={setParticipants}
-            />
+            <View>
+                <ParticipantInput
+                    input={input} setInput={setInput}
+                    participants={participants} setParticipants={setParticipants}
+                />
 
-            <CountInput
-                setCount={setCount} count={count}
-                type={type} setType={setType}
-            />
+                <CountInput
+                    setCount={setCount} count={count}
+                    type={type} setType={setType}
+                />
 
-            <ButtonContainer assign={assign}/>
+                <ButtonContainer assign={assign}/>
+            </View>
+
+            <Group participants={participants}/>
         </View>
     );
 }
