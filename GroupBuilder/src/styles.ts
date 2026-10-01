@@ -53,6 +53,11 @@ export const styles = StyleSheet.create({
         width: "100%",
         color: "#1e293b",
     },
+    btnGroup: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
     button: {
         backgroundColor: "#2563eb",
         paddingVertical: 10,
@@ -70,5 +75,8 @@ export const styles = StyleSheet.create({
         color: "#ffffff",
         fontSize: 15,
         fontWeight: "600",
+    },
+    assignButton: {
+        backgroundColor: "#059669",
     },
 });
