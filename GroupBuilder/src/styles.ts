@@ -27,6 +27,32 @@ export const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         color: "#1e293b",
     },
+    numInput: {
+        width: 60,
+        height: 50,
+        textAlign: "center",
+        flex: 0,
+    },
+    pickerWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        flex: 1,
+    },
+    pickerContainer: {
+        borderWidth: 1,
+        borderColor: "#cbd5e1",
+        borderRadius: 8,
+        backgroundColor: "#ffffff",
+        justifyContent: "center",
+        flex: 1,
+        height: 50,
+    },
+    picker: {
+        height: 55,
+        width: "100%",
+        color: "#1e293b",
+    },
     button: {
         backgroundColor: "#2563eb",
         paddingVertical: 10,
